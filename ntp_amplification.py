@@ -93,9 +93,17 @@ def is_ipv4(address: str):
 
 
 def printHelp():
-    header = "ntp-amplification v1.0"
+    banner = """
+███╗   ██╗████████╗██████╗        █████╗ ███╗   ███╗██████╗ ██╗     ██╗███████╗██╗███████╗██████╗ 
+████╗  ██║╚══██╔══╝██╔══██╗      ██╔══██╗████╗ ████║██╔══██╗██║     ██║██╔════╝██║██╔════╝██╔══██╗
+██╔██╗ ██║   ██║   ██████╔╝█████╗███████║██╔████╔██║██████╔╝██║     ██║█████╗  ██║█████╗  ██████╔╝
+██║╚██╗██║   ██║   ██╔═══╝ ╚════╝██╔══██║██║╚██╔╝██║██╔═══╝ ██║     ██║██╔══╝  ██║██╔══╝  ██╔══██╗
+██║ ╚████║   ██║   ██║           ██║  ██║██║ ╚═╝ ██║██║     ███████╗██║██║     ██║███████╗██║  ██║
+╚═╝  ╚═══╝   ╚═╝   ╚═╝           ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
+                                                                                                                                                                                                                                                                                                                        
+"""
     usage = "usage: python3 ntp-amplification <target ip>"
-    manual = header + "\n\n" + usage
+    manual = banner + "\n" + usage
     print(manual)
 
 
@@ -110,7 +118,7 @@ def main():
     if len(sys.argv) != 2 or not is_ipv4(sys.argv[1]):
         printHelp()
         return
-    
+
     if os.geteuid() != 0:
         print("Script must be executed as root")
         return

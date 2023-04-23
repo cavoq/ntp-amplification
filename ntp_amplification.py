@@ -4,6 +4,7 @@ from scapy.all import IP, UDP, Raw, send
 import json
 import socket
 import sys
+import os
 import threading
 import subprocess
 import time
@@ -12,7 +13,7 @@ CONFIG_PATH = "config.json"
 
 
 class Config:
-    def __init__(self, ntp_config_path, pools, server_count):
+    def __init__(self, ntp_config_path: str, pools, server_count):
         self.ntp_config_path = ntp_config_path
         self.pools = pools
         self.server_count = server_count
@@ -83,7 +84,7 @@ class NTPScanner:
         return refid
 
 
-def is_ipv4(address):
+def is_ipv4(address: str):
     try:
         socket.inet_pton(socket.AF_INET, address)
     except socket.error:
@@ -108,6 +109,10 @@ def deny(server: str, target: str):
 def main():
     if len(sys.argv) != 2 or not is_ipv4(sys.argv[1]):
         printHelp()
+        return
+    
+    if os.geteuid() != 0:
+        print("Script must be executed as root")
         return
 
     config = Config.from_json_file(CONFIG_PATH)

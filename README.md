@@ -9,12 +9,13 @@ Tool for NTP-Amplification attack. It uses the pools specified in the *config.js
 Only use this on networks you own or have permission for.**
 
 ## Requirements
-**Install Scapy**
+
+**Install Scapy and ntp**
 ```
-sudo apt-get install python3-scapy
+sudo apt install python3-scapy && sudo apt install ntp
 ```
 ## Usage
 **Example**
 ```
-python3 ntp_amplification.py 192.168.2.1
+sudo python3 ntp_amplification.py 192.168.2.1
 ```

@@ -107,8 +107,9 @@ OPTIONS:\n
 -h, --help: Show this help message and exit
 -s, --server: Specify ntp server list\n
 """
-    usage = "USAGE: python3 ntp-amplification [Options] <target ip>"
-    manual = banner + "\n" + usage + "\n" + options
+    usage = "USAGE: sudo python3 ntp-amplification [Options] <target ip>\n"
+    example = "EXAMPLE: sudo python3 ntp-amplification -s exampler-servers.txt 192.168.2.1"
+    manual = banner + "\n" + usage + "\n" + example + "\n" + options
     print(manual)
 
 

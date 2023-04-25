@@ -16,4 +16,4 @@ sudo apt install python3-scapy && sudo apt install ntp
 ```
 ## Usage
 
-![Screenshot from 2023-04-25 20-35-01](https://user-images.githubusercontent.com/61215846/234370941-4ed1e3c0-9bcb-47be-acb5-407ea198e173.png)
+![Screenshot from 2023-04-25 20-39-35](https://user-images.githubusercontent.com/61215846/234371420-8265a5cb-a8a1-4b82-b0b6-4109ad577190.png)

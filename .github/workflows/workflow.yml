@@ -3,7 +3,7 @@ name: Python CI/CD Workflow
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
 

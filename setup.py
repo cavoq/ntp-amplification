@@ -11,7 +11,7 @@ setup(
     version=__version__,
     author="cavoq",
     author_email="cavoq@proton.me",
-    license="MIT",
+    license="BSD 2-Clause simplified License",
     description="NTP-Amplification Attack Tool",
     url="https://github.com/cavoq/ntp-amplification",
     python_requires=">=3",

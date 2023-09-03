@@ -10,7 +10,7 @@ Only use this on networks you own or have permission for.**
 
 ## Requirements
 
-**Install Scapy and ntp**
+**Install scapy and ntp**
 ```
 sudo apt install python3-scapy && sudo apt install ntp
 ```

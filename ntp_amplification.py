@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
-from scapy.all import IP, UDP, Raw, send
+try:
+    from scapy.all import IP, UDP, Raw, send
+except ImportError:
+    raise ImportError(
+        "The 'scapy' library is not installed. Please install it using 'apt-get' before using this package."
+    )
+
 import json
 import socket
 import sys
@@ -159,7 +165,7 @@ def read_servers(server_list: str) -> list:
 
     with open(server_list, 'r') as f:
         servers = f.read().splitlines()
-        
+
     return servers
 
 

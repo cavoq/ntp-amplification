@@ -17,8 +17,8 @@ setup(
     python_requires=">=3",
     scripts=["ntp_amplification.py"],
     entry_points={
-        'console_scripts': [
-            'ntp-amplification = ntp_amplification:main',
+        "console_scripts": [
+            "ntp-amplification = ntp_amplification:main",
         ],
     },
     install_requires=requirements,

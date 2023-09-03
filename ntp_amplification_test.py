@@ -1,9 +1,9 @@
-import ntp_amplification as ntpamp
 import unittest
+
+import ntp_amplification as ntpamp
 
 
 class TestNTPAmplification(unittest.TestCase):
-
     def test_is_ipv4(self):
         self.assertTrue(ntpamp.is_ipv4("192.168.0.1"))
         self.assertTrue(ntpamp.is_ipv4("10.0.0.1"))
@@ -14,5 +14,5 @@ class TestNTPAmplification(unittest.TestCase):
         self.assertFalse(ntpamp.is_ipv4("::1"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

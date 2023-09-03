@@ -39,12 +39,12 @@ sudo python3 ntp_amplification.py
 ## Usage
 
 ```
- _   _ _____ ____         _    __  __ ____  _     ___ _____ ___ _____ ____  
-| \ | |_   _|  _ \       / \  |  \/  |  _ \| |   |_ _|  ___|_ _| ____|  _ \ 
+ _   _ _____ ____         _    __  __ ____  _     ___ _____ ___ _____ ____
+| \ | |_   _|  _ \       / \  |  \/  |  _ \| |   |_ _|  ___|_ _| ____|  _ \
 |  \| | | | | |_) |____ / _ \ | |\/| | |_) | |    | || |_   | ||  _| | |_) |
-| |\  | | | |  __/_____/ ___ \| |  | |  __/| |___ | ||  _|  | || |___|  _ < 
+| |\  | | | |  __/_____/ ___ \| |  | |  __/| |___ | ||  _|  | || |___|  _ <
 |_| \_| |_| |_|       /_/   \_\_|  |_|_|   |_____|___|_|   |___|_____|_| \_\
-                                                                            
+
 
 NTP-Amplification Attack Tool v1.3
 
@@ -58,8 +58,19 @@ EXAMPLE: ntp-amplification -s exampler-servers.txt 192.168.2.1
 
 ## Developer notes
 
+**lint**
+```bash
+pre-commit run --all-files
+```
+
 **test**
 ```bash
 sudo coverage run -m unittest ntp_amplification_test.py
 coverage report -m
+```
+
+**publish**
+```bash
+python3 setup.py sdist bdist_wheel
+python3 -m twine upload --verbose dist/*
 ```

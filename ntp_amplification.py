@@ -217,7 +217,7 @@ def print_formatted(prefix: str, text: str, color: str = "red", attrs: list = []
 
 def main():
     if os.geteuid() != 0:
-        print("Script must be executed as root")
+        print_formatted("!", "Script must be executed as root")
         return
 
     args = parse_args()

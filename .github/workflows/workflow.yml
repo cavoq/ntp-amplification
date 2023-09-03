@@ -23,7 +23,7 @@ jobs:
     - name: Install Dependencies
       run: pip install -r requirements.txt
 
-    -name : Install Test Dependencies
+    - name : Install Test Dependencies
       run: pip install -r requirements-dev.txt
 
     - name: Run Tests

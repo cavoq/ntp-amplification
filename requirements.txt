@@ -1,0 +1,3 @@
+termcolor==2.3.0
+pyfiglet==0.8.post1
+scapy==2.5.0

@@ -1,8 +1,10 @@
 from setuptools import setup
 
 __package__ = "ntp-amplification"
-__version__ = "1.2"
+__version__ = "1.3"
 
+with open("requirements.txt", "r") as f:
+    requirements = f.read().splitlines()
 
 setup(
     name=__package__,
@@ -19,4 +21,5 @@ setup(
             'ntp-amplification = ntp_amplification:main',
         ],
     },
+    install_requires=requirements,
 )

@@ -6,7 +6,10 @@ except ImportError:
     raise ImportError(
         "The 'scapy' library is not installed. Please install it using 'apt-get' before using this package."
     )
+from termcolor import colored
+from pyfiglet import figlet_format
 
+import shutil
 import json
 import socket
 import sys
@@ -98,25 +101,32 @@ def is_ipv4(address: str):
     return True
 
 
-def printHelp():
-    banner = """
-███╗   ██╗████████╗██████╗        █████╗ ███╗   ███╗██████╗ ██╗     ██╗███████╗██╗███████╗██████╗ 
-████╗  ██║╚══██╔══╝██╔══██╗      ██╔══██╗████╗ ████║██╔══██╗██║     ██║██╔════╝██║██╔════╝██╔══██╗
-██╔██╗ ██║   ██║   ██████╔╝█████╗███████║██╔████╔██║██████╔╝██║     ██║█████╗  ██║█████╗  ██████╔╝
-██║╚██╗██║   ██║   ██╔═══╝ ╚════╝██╔══██║██║╚██╔╝██║██╔═══╝ ██║     ██║██╔══╝  ██║██╔══╝  ██╔══██╗
-██║ ╚████║   ██║   ██║           ██║  ██║██║ ╚═╝ ██║██║     ███████╗██║██║     ██║███████╗██║  ██║
-╚═╝  ╚═══╝   ╚═╝   ╚═╝           ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝     ╚══════╝╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
-                                                                                                                                                                                                                                                                                                                        
-"""
-    options = """
-OPTIONS:\n 
--h, --help: Show this help message and exit
--s, --server: Specify ntp server list\n
-"""
-    usage = "USAGE: sudo python3 ntp-amplification [Options] <target ip>\n"
-    example = "EXAMPLE: sudo python3 ntp-amplification -s exampler-servers.txt 192.168.2.1"
-    manual = banner + "\n" + usage + "\n" + example + "\n" + options
-    print(manual)
+def print_banner():
+    banner_text = "NTP-AMPLIFIER"
+    description_text = "NTP-Amplification Attack Tool v1.2"
+    usage_text = "USAGE: ntp_amplification [options] <target ip>"
+    options_text = "OPTIONS:\n -h, --help: Show this help message and exit\n -s, --server: Specify ntp server list"
+    example_text = "EXAMPLE: ntp-amplification -s exampler-servers.txt 192.168.2.1"
+
+    terminal_width = shutil.get_terminal_size().columns
+    font = "standard"
+
+    ascii_banner = figlet_format(
+        banner_text, font=font, width=terminal_width, justify="left")
+
+    colored_banner = colored(ascii_banner,
+                             color="red", attrs=["bold"])
+    colored_usage = colored(usage_text, color="red")
+    colored_options = colored(options_text, color="red")
+    colored_example = colored(example_text, color="red")
+    description_text = colored(
+        description_text, color="red", attrs=["bold", "underline"])
+
+    print(colored_banner)
+    print(description_text)
+    print("\n" + colored_usage)
+    print(colored_options)
+    print(colored_example)
 
 
 def deny(server: str, target: str):
@@ -128,7 +138,7 @@ def deny(server: str, target: str):
 
 def parse_args():
     if len(sys.argv) < 2:
-        printHelp()
+        print_banner()
         sys.exit(1)
 
     options = {'-h': "--help", '-s': "--server"}
@@ -139,12 +149,12 @@ def parse_args():
         arg = sys.argv[i]
         if arg in options.keys():
             if arg == '-h':
-                printHelp()
+                print_banner()
                 sys.exit(0)
             if arg == '-s':
                 if i + 1 >= len(sys.argv):
                     print("Error: server list file is required")
-                    printHelp()
+                    print_banner()
                     sys.exit(1)
                 args["server_list"] = sys.argv[i + 1]
         i += 1
@@ -152,7 +162,7 @@ def parse_args():
     args["target_ip"] = sys.argv[-1]
     if args["target_ip"] is None or not is_ipv4(args["target_ip"]):
         print("Target ip is required and must be a valid ipv4 address")
-        printHelp()
+        print_banner()
         sys.exit(1)
 
     return args

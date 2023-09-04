@@ -1,7 +1,7 @@
 from setuptools import setup
 
 __package__ = "ntp-amplification"
-__version__ = "1.5.0"
+__version__ = "1.5.3"
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -17,6 +17,7 @@ setup(
     license="BSD 2-Clause simplified License",
     description="NTP-Amplification Attack Tool",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/cavoq/ntp-amplification",
     python_requires=">=3",
     scripts=["ntp_amplification.py"],

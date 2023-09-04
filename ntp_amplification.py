@@ -103,7 +103,7 @@ def is_ipv4(address: str):
 
 def print_banner():
     banner_text = "NTP-AMPLIFIER"
-    description_text = "NTP-Amplification Attack Tool v1.2"
+    description_text = "NTP-Amplification Attack Tool v1.5.3"
     usage_text = "USAGE: ntp_amplification [options] <target ip>"
     options_text = """OPTIONS:
  -h, --help: Show this help message and exit

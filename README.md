@@ -52,7 +52,8 @@ USAGE: ntp-amplification [options] <target ip>
 OPTIONS:
  -h, --help: Show this help message and exit
  -s, --server: Specify ntp server list
-EXAMPLE: ntp-amplification -s exampler-servers.txt 192.168.2.1
+ -c, --config: Specify config file
+EXAMPLE: ntp-amplification -s example-servers.txt 192.168.2.1
 
 ```
 

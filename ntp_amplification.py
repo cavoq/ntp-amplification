@@ -104,8 +104,11 @@ def print_banner():
     banner_text = "NTP-AMPLIFIER"
     description_text = "NTP-Amplification Attack Tool v1.2"
     usage_text = "USAGE: ntp_amplification [options] <target ip>"
-    options_text = "OPTIONS:\n -h, --help: Show this help message and exit\n -s, --server: Specify ntp server list"
-    example_text = "EXAMPLE: ntp-amplification -s exampler-servers.txt 192.168.2.1"
+    options_text = """OPTIONS:
+ -h, --help: Show this help message and exit
+ -s, --server: Specify ntp server list file
+ -c, --config: Specify config file"""
+    example_text = "EXAMPLE: ntp-amplification -s example-servers.txt 192.168.2.1"
 
     terminal_width = shutil.get_terminal_size().columns
     font = "standard"
@@ -140,22 +143,29 @@ def parse_args():
         print_banner()
         sys.exit(1)
 
-    options = {"-h": "--help", "-s": "--server"}
-    args = {"target_ip": None, "server_list": None}
+    options = {"-h": "--help", "-s": "--server", "-c": "--config"}
+    args = {"target_ip": None, "server_list": None, "config": None}
 
     i = 1
     while i < len(sys.argv):
         arg = sys.argv[i]
-        if arg in options.keys():
-            if arg == "-h":
+        if arg in options.keys() or arg in options.values():
+            if arg in ["-h", "--help"]:
                 print_banner()
                 sys.exit(0)
-            if arg == "-s":
+            if arg == ["-s", "--server"]:
                 if i + 1 >= len(sys.argv):
                     print_formatted("-", "Error: server list file is required")
                     print_banner()
                     sys.exit(1)
                 args["server_list"] = sys.argv[i + 1]
+            if arg == ["-c", "--config"]:
+                if i + 1 >= len(sys.argv):
+                    print_formatted("-", "Error: config file is required")
+                    print_banner()
+                    sys.exit(1)
+                args["config"] = sys.argv[i + 1]
+                i += 1
         i += 1
 
     args["target_ip"] = sys.argv[-1]
@@ -222,13 +232,17 @@ def main():
 
     args = parse_args()
     servers = []
+    config = CONFIG_PATH
+
+    if args["config"] is not None:
+        config = args["config"]
 
     if args["server_list"] is not None:
         servers = read_servers(args["server_list"])
         ntp_amplify(servers, args["target_ip"])
         return
 
-    config = Config.from_json_file(CONFIG_PATH)
+    config = Config.from_json_file(config)
     scanner = NTPScanner(config)
     scanner.scan()
     ntp_amplify(scanner.servers, args["target_ip"])

@@ -48,7 +48,7 @@ sudo python3 ntp_amplification.py
 
 NTP-Amplification Attack Tool v1.3
 
-USAGE: ntp_amplification [options] <target ip>
+USAGE: ntp-amplification [options] <target ip>
 OPTIONS:
  -h, --help: Show this help message and exit
  -s, --server: Specify ntp server list

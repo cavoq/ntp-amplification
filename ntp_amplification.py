@@ -6,6 +6,7 @@ except ImportError:
     raise ImportError(
         "The 'scapy' library is not installed. Please install it using 'apt-get' before using this package."
     )
+
 import json
 import os
 import shutil

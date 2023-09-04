@@ -2,7 +2,8 @@
 Tool for NTP-Amplification attack. It uses the pools specified in the *config.json* to scan for public ntp-servers, these servers will be used to attack the specified target. You can also pass in a list of ntp-servers yourself.
 
 ![license](https://img.shields.io/badge/license-MIT-brightgreen.svg)
-![version](https://img.shields.io/badge/version-1.3-lightgrey.svg)
+![version](https://img.shields.io/badge/version-1.5.1-lightgrey.svg)
+![build](https://img.shields.io/github/actions/workflow/status/cavoq/ntp-amplification/workflow.yml)
 
 ## Disclaimer
 **This tool is designed for educational purposes only, i do not support the use for any illegal activities.
@@ -46,7 +47,7 @@ sudo python3 ntp_amplification.py
 |_| \_| |_| |_|       /_/   \_\_|  |_|_|   |_____|___|_|   |___|_____|_| \_\
 
 
-NTP-Amplification Attack Tool v1.3
+NTP-Amplification Attack Tool v1.5.1
 
 USAGE: ntp-amplification [options] <target ip>
 OPTIONS:

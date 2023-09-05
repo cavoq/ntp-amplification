@@ -41,11 +41,11 @@ class Config:
         pools = data["pools"]
         server_count = data["server_count"]
         config = cls(ntp_config_path, pools, server_count)
-        config.removePools()
-        config.addPools()
+        config.remove_pools()
+        config.add_pools()
         return config
 
-    def removePools(self):
+    def remove_pools(self):
         with open(self.ntp_config_path, "r") as config_file:
             lines = config_file.readlines()
         with open(self.ntp_config_path, "w") as config_file:
@@ -53,7 +53,7 @@ class Config:
                 if not line.startswith("server"):
                     config_file.write(line)
 
-    def addPools(self):
+    def add_pools(self):
         with open(self.ntp_config_path, "r") as f:
             content = f.read()
         for pool in self.pools:

@@ -20,6 +20,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/cavoq/ntp-amplification",
     python_requires=">=3",
+    py_modules=["ntp_amplification"],
     scripts=["ntp_amplification.py"],
     entry_points={
         "console_scripts": [

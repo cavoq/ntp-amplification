@@ -154,19 +154,18 @@ def parse_args():
             if arg in ["-h", "--help"]:
                 print_banner()
                 sys.exit(0)
-            if arg == ["-s", "--server"]:
+            if arg in ["-s", "--server"]:
                 if i + 1 >= len(sys.argv):
                     print_formatted("-", "Error: server list file is required")
                     print_banner()
                     sys.exit(1)
                 args["server_list"] = sys.argv[i + 1]
-            if arg == ["-c", "--config"]:
+            if arg in ["-c", "--config"]:
                 if i + 1 >= len(sys.argv):
                     print_formatted("-", "Error: config file is required")
                     print_banner()
                     sys.exit(1)
                 args["config"] = sys.argv[i + 1]
-                i += 1
         i += 1
 
     args["target_ip"] = sys.argv[-1]
@@ -233,17 +232,18 @@ def main():
 
     args = parse_args()
     servers = []
-    config = CONFIG_PATH
+    config_path = CONFIG_PATH
 
     if args["config"] is not None:
-        config = args["config"]
+        config_path = args["config"]
+    print(config_path)
 
     if args["server_list"] is not None:
         servers = read_servers(args["server_list"])
         ntp_amplify(servers, args["target_ip"])
         return
 
-    config = Config.from_json_file(config)
+    config = Config.from_json_file(config_path)
     scanner = NTPScanner(config)
     scanner.scan()
     ntp_amplify(scanner.servers, args["target_ip"])

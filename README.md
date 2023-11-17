@@ -3,6 +3,7 @@
 ![license](https://img.shields.io/badge/license-MIT-brightgreen.svg)
 ![version](https://img.shields.io/badge/version-1.5.4-lightgrey.svg)
 ![build](https://img.shields.io/github/actions/workflow/status/cavoq/ntp-amplification/workflow.yml)
+![Debian Compatible](https://img.shields.io/badge/Debian-Compatible-brightgreen.svg)
 
 Tool for NTP-Amplification attack. It uses the pools specified in the *config.json* to scan for public ntp-servers, these servers will be used to attack the specified target. You can also pass in a list of ntp-servers yourself.
 

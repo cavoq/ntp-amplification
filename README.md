@@ -70,7 +70,7 @@ pre-commit run --all-files
 **test**
 ```bash
 sudo coverage run -m unittest ntp_amplification_test.py
-coverage report -m
+coverage report -m --include=ntp_amplification.py
 ```
 
 **publish**

@@ -179,12 +179,10 @@ def parse_args():
 
 def read_servers(server_list: str) -> list:
     if not os.path.isfile(server_list):
-        print("Error: server list file does not exist")
+        print_formatted("-", "Error: server list file does not exist")
         sys.exit(1)
-
     with open(server_list, "r") as f:
         servers = f.read().splitlines()
-
     return servers
 
 
@@ -236,7 +234,6 @@ def main():
 
     if args["config"] is not None:
         config_path = args["config"]
-    print(config_path)
 
     if args["server_list"] is not None:
         servers = read_servers(args["server_list"])

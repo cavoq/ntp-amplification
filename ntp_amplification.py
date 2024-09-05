@@ -20,13 +20,13 @@ from pyfiglet import figlet_format
 from termcolor import colored
 
 CONFIG_PATH = "config.json"
+TIMEOUT = 30
 
 
 class Config:
-    def __init__(self, ntp_config_path: str, pools, server_count):
+    def __init__(self, ntp_config_path: str, pools):
         self.ntp_config_path = ntp_config_path
         self.pools = pools
-        self.server_count = server_count
 
     @classmethod
     def from_json_file(cls, json_file):
@@ -36,7 +36,7 @@ class Config:
     @classmethod
     def from_json(cls, json_data):
         data = json.loads(json_data)
-        config = cls(data["ntp_config_path"], data["pools"], data["server_count"])
+        config = cls(data["ntp_config_path"], data["pools"])
         config.update_pools()
         return config
 
@@ -68,7 +68,22 @@ class NTPScanner:
         print_formatted("+", "Restarting ntp daemon...")
         subprocess.run(["systemctl", "restart", "ntp"])
         print_formatted("+", "Synchronizing ntp servers...")
-        time.sleep(2 * self.config.server_count)
+        if not self.wait_for_sync():
+            raise TimeoutError(
+                "NTP servers failed to synchronize within the time limit."
+            )
+        print_formatted("+", "NTP servers synchronized.")
+
+    def wait_for_sync(self, timeout=TIMEOUT) -> bool:
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            output = subprocess.run(
+                ["ntpq", "-p"], capture_output=True, text=True
+            ).stdout
+            if any("*" in line for line in output.splitlines()):
+                return True
+            time.sleep(1)
+        return False
 
     def scan(self):
         self.servers.clear()
@@ -80,13 +95,8 @@ class NTPScanner:
                 self.servers.append(refid)
 
     def extract_ipv4_refid(self, row: str):
-        fields = row.split(" ")
-        if len(fields) < 3:
-            return None
-        refid = fields[2]
-        if not is_ipv4(refid):
-            return None
-        return refid
+        fields = row.split()
+        return fields[2] if len(fields) >= 3 and is_ipv4(fields[2]) else None
 
 
 def is_ipv4(address: str):

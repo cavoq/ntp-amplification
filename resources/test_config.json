@@ -6,6 +6,5 @@
         "3.europe.pool.ntp.org",
         "2.europe.pool.ntp.org",
         "1-europe.pool.ntp.org"
-    ],
-    "server_count": 5
+    ]
 }

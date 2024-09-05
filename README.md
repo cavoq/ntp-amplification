@@ -48,7 +48,7 @@ sudo python3 ntp_amplification.py
 |_| \_| |_| |_|       /_/   \_\_|  |_|_|   |_____|___|_|   |___|_____|_| \_\
 
 
-NTP-Amplification Attack Tool v1.5.4
+NTP-Amplification Attack Tool v1.7.0
 
 USAGE: ntp-amplification [options] <target ip>
 OPTIONS:

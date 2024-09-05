@@ -20,7 +20,7 @@ from pyfiglet import figlet_format
 from termcolor import colored
 
 CONFIG_PATH = "config.json"
-TIMEOUT = 30
+WAIT_FACTOR = 2
 
 
 class Config:
@@ -72,18 +72,8 @@ class NTPScanner:
             raise TimeoutError(
                 "NTP servers failed to synchronize within the time limit."
             )
+        time.sleep(WAIT_FACTOR * len(self.config.pools))
         print_formatted("+", "NTP servers synchronized.")
-
-    def wait_for_sync(self, timeout=TIMEOUT) -> bool:
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            output = subprocess.run(
-                ["ntpq", "-p"], capture_output=True, text=True
-            ).stdout
-            if any("*" in line for line in output.splitlines()):
-                return True
-            time.sleep(1)
-        return False
 
     def scan(self):
         self.servers.clear()

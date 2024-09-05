@@ -31,35 +31,31 @@ class Config:
     @classmethod
     def from_json_file(cls, json_file):
         with open(json_file, "r") as f:
-            json_data = f.read()
-        return cls.from_json(json_data)
+            return cls.from_json(f.read())
 
     @classmethod
     def from_json(cls, json_data):
         data = json.loads(json_data)
-        ntp_config_path = data["ntp_config_path"]
-        pools = data["pools"]
-        server_count = data["server_count"]
-        config = cls(ntp_config_path, pools, server_count)
-        config.remove_pools()
-        config.add_pools()
+        config = cls(data["ntp_config_path"], data["pools"], data["server_count"])
+        config.update_pools()
         return config
+
+    def update_pools(self):
+        with open(self.ntp_config_path, "r") as config_file:
+            lines = config_file.readlines()
+        lines = [line for line in lines if not line.startswith("server")]
+        for pool in self.pools:
+            if f"server {pool}" not in "".join(lines):
+                lines.append(f"server {pool}\n")
+        with open(self.ntp_config_path, "w") as config_file:
+            config_file.writelines(lines)
 
     def remove_pools(self):
         with open(self.ntp_config_path, "r") as config_file:
             lines = config_file.readlines()
+        lines = [line for line in lines if not line.startswith("server")]
         with open(self.ntp_config_path, "w") as config_file:
-            for line in lines:
-                if not line.startswith("server"):
-                    config_file.write(line)
-
-    def add_pools(self):
-        with open(self.ntp_config_path, "r") as f:
-            content = f.read()
-        for pool in self.pools:
-            if "server " + pool not in content:
-                with open(self.ntp_config_path, "a") as f:
-                    f.write("server " + pool + "\n")
+            config_file.writelines(lines)
 
 
 class NTPScanner:

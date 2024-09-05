@@ -39,7 +39,12 @@ class TestNTPAmplification(unittest.TestCase):
             content = f.read()
             for pool in config.pools:
                 self.assertIn("server " + pool, content)
+
         config.remove_pools()
+        with open(config.ntp_config_path, "r") as f:
+            content = f.read()
+            for pool in config.pools:
+                self.assertNotIn("server " + pool, content)
 
     def test_read_servers(self):
         servers = ntpamp.read_servers(self.servers_path)

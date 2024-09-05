@@ -13,8 +13,7 @@ Only use this on networks you own or have permission for.**
 
 ## Note
 
-**Since this script uses scapy, it needs to have root privileges, if
-you install it with pip, you need to install it with sudo.**
+**Scapy needs root privileges to send packets, so this script requires root privileges.**
 
 ## Requirements
 

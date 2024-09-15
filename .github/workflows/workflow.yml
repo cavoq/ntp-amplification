@@ -20,10 +20,9 @@ jobs:
           python-version: 3.13.0-rc.2
 
       - name: Install Dependencies
-        run: pip install -r requirements-dev.txt
-
-      - name: Install Linter
-        run: pre-commit install
+        run: |
+          pip install -r requirements-dev.txt
+          pre-commit install
 
       - name: Lint Code
         run: pre-commit run --all-files
@@ -90,15 +89,16 @@ jobs:
             echo "Version is incremented, proceeding..."
           fi
 
-      - name: Push Changes to Repository
-        if: success()
-        env:
-          TOKEN: ${{ secrets.PYPI_TOKEN }}
+      - name: Build Package
+        id: build
+        if: steps.version_check.outcome == 'success'
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git checkout master
+          python setup.py sdist bdist_wheel
 
-          git add .
-          git commit -m "Release version ${{ steps.current_version.outputs.VERSION }}"
-          git push origin master
+      - name: Publish to PyPI
+        if: steps.build.outcome == 'success'
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          pip install twine
+          twine upload dist/* -u __token__ -p $PYPI_TOKEN

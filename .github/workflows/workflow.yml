@@ -80,7 +80,7 @@ jobs:
           git fetch origin master
           git checkout master
 
-          cur_version=$(python -c "exec(open('ntp_amplification/version.py').read()); print(__version__)")
+          cur_version=$(python -c "exec(open('version.py').read()); print(__version__)")
           echo "Main branch version: $cur_version"
 
           if [ "$cur_version" = "$version" ]; then

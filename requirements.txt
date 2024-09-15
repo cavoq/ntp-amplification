@@ -2,3 +2,4 @@ termcolor==2.4.0
 pyfiglet==1.0.2
 scapy==2.5.0
 pathlib==1.0.1
+setuptools==74.1.2

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 __package__ = "ntp-amplification"
-__version__ = "1.7.0"
+from version import __version__
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()

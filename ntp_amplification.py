@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from version import __version__
-
 try:
     from scapy.all import IP, UDP, Raw, send
 except ImportError:
@@ -96,7 +94,7 @@ def is_ipv4(address: str):
 
 def print_banner():
     banner_text = "NTP-AMPLIFIER"
-    description_text = f"NTP-Amplification Attack Tool v{__version__}"
+    description_text = f"NTP-Amplification Attack Tool v1.7.1"
     usage_text = "USAGE: ntp_amplification [options] <target ip>"
     options_text = """OPTIONS:
  -h, --help: Show this help message and exit

@@ -1,20 +1,19 @@
 # NTP-Amplification
 
 ![license](https://img.shields.io/badge/license-MIT-brightgreen.svg)
-![version](https://img.shields.io/badge/version-1.5.4-lightgrey.svg)
 ![CI/CD](https://img.shields.io/github/actions/workflow/status/cavoq/ntp-amplification/workflow.yml)
 ![PyPI version](https://img.shields.io/pypi/v/ntp-amplification)
 ![Debian Compatible](https://img.shields.io/badge/Debian-Compatible-brightgreen.svg)
 
-Tool for NTP-Amplification attack. It uses the pools specified in the *config.json* to scan for public ntp-servers, these servers will be used to attack the specified target. You can also pass in a list of ntp-servers yourself.
+This tool performs NTP-Amplification tests using the server pools specified in config.json to locate public NTP servers. These servers can reflect packets toward a specified target. You may also provide your own list of NTP servers. Only run this tool against systems you are authorized to test.
 
 ## Disclaimer
-**This tool is designed for educational purposes only, i do not support the use for any illegal activities.
-Only use this on networks you own or have permission for.**
+
+**LEGAL NOTICE**: This tool is intended strictly for educational purposes and authorized defensive testing. Unauthorized use against systems you do not own or lack explicit written permission for may be illegal and subject to civil or criminal penalties. The author accepts no responsibility for misuse.
 
 ## Note
 
-**Scapy needs root privileges to send packets, so this script requires root privileges.**
+**Scapy needs root privileges to send packets, therefore this script requires root privileges.**
 
 ## Requirements
 
@@ -49,7 +48,7 @@ sudo python3 ntp_amplification.py
 |_| \_| |_| |_|       /_/   \_\_|  |_|_|   |_____|___|_|   |___|_____|_| \_\
 
 
-NTP-Amplification Attack Tool v1.7.0
+NTP-Amplification Attack Tool v1.7.2
 
 USAGE: ntp-amplification [options] <target ip>
 OPTIONS:
